@@ -3,440 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VillCoin Premium</title>
-    <!-- Подключаем шрифты для дорогого вида -->
+    <title>VillCoin: Listing Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-green: #00ff88;
-            --deep-green: #004d2c;
-            --dark-bg: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.07);
-            --ios-blur: blur(20px);
+            --bright-neon: #0dfa93;
+            --dark-bg: #030303;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--dark-bg);
-            color: white;
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-            user-select: none;
+            margin: 0; padding: 0; background: var(--dark-bg); color: white;
+            font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- ФОНОВЫЕ ЭФФЕКТЫ --- */
-        .bg-glow {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150%;
-            height: 150%;
-            background: radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 60%);
-            z-index: -1;
-            pointer-events: none;
+        /* --- ПРОВЕРКА ПОДПИСКИ (БЛОКИРОВКА) --- */
+        #sub-lock {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
+        }
+        .lock-card {
+            width: 85%; background: #0a0a0a; padding: 40px 25px; border-radius: 40px;
+            border: 2px solid var(--neon-green); text-align: center;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+        .lock-card h2 { font-family: 'Montserrat'; font-size: 2.2rem; color: var(--neon-green); margin-top: 0; }
+        .btn-sub {
+            background: white; color: black; padding: 18px; border-radius: 18px;
+            display: block; text-decoration: none; font-weight: 900; margin: 20px 0 10px;
+        }
+        .btn-check {
+            background: var(--neon-green); color: black; padding: 18px; border-radius: 18px;
+            width: 100%; border: none; font-weight: 900; cursor: pointer;
         }
 
-        /* --- ШАПКА И БАЛАНС --- */
-        .header {
-            margin-top: 60px;
-            text-align: center;
-            z-index: 10;
+        /* --- ПРОФИЛЬ СЛЕВА --- */
+        .profile-box {
+            position: absolute; top: 20px; left: 15px;
+            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 10px 15px; border-radius: 20px; border: 1px solid var(--glass-border);
+            display: flex; flex-direction: column; gap: 4px; z-index: 100;
         }
+        .profile-box span { font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase; }
+        .profile-box b { color: var(--neon-green); font-size: 0.9rem; }
 
-        #score-container {
-            position: relative;
-            display: inline-block;
-        }
-
+        /* --- БАЛАНС --- */
+        .header { margin-top: 80px; text-align: center; }
         #score {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 5rem;
-            font-weight: 900;
-            margin: 0;
-            background: linear-gradient(180deg, #FFFFFF 40%, var(--neon-green) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
-            transition: transform 0.1s ease;
+            font-family: 'Montserrat'; font-size: 5.5rem; font-weight: 900; margin: 0;
+            background: linear-gradient(180deg, #fff 40%, var(--neon-green) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.4));
         }
 
-        .currency-name {
-            color: var(--neon-green);
-            font-weight: 800;
-            letter-spacing: 5px;
-            font-size: 1rem;
-            margin-top: -10px;
-            opacity: 0.9;
-            text-transform: uppercase;
+        /* --- МОНЕТА И КД --- */
+        #game-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
+        .coin-wrap { position: relative; width: 280px; height: 280px; }
+        
+        /* Кольцо КД */
+        .cd-ring {
+            position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 3px solid rgba(0, 255, 136, 0.1); border-radius: 50%;
         }
-
-        /* --- ИГРОВАЯ ЗОНА --- */
-        #game-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            position: relative;
-        }
-
-        .coin-base {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Анимированное свечение под монетой */
-        .coin-outer-glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(0, 255, 136, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: pulse-glow 3s infinite ease-in-out;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.15); opacity: 0.6; }
+        .cd-fill {
+            position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 3px solid var(--neon-green); border-radius: 50%;
+            clip-path: inset(0 0 100% 0); transition: 0.5s linear;
         }
 
         #main-coin {
-            width: 270px;
-            height: 270px;
-            background: radial-gradient(circle at 35% 35%, #1a1a1a 0%, #000 100%);
-            border-radius: 50%;
-            border: 6px solid #111;
-            box-shadow: 
-                0 0 0 2px rgba(0, 255, 136, 0.1),
-                0 20px 50px rgba(0, 0, 0, 0.9),
-                inset 0 0 30px rgba(0, 255, 136, 0.05);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 5;
-            transition: transform 0.05s cubic-bezier(0, 0, 0.2, 1);
+            width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #222, #000);
+            border: 5px solid #111; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.8); transition: 0.05s; z-index: 5;
         }
+        #main-coin:active { transform: scale(0.92); }
+        #main-coin::after { content: "V"; font-family: 'Montserrat'; font-size: 110px; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green); }
 
-        #main-coin::before {
-            content: "V";
-            font-family: 'Montserrat', sans-serif;
-            font-size: 110px;
-            color: var(--neon-green);
-            text-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
-            font-weight: 900;
+        /* --- НАГРАДЫ --- */
+        #gift-btn {
+            position: absolute; right: 20px; top: 100px; background: var(--neon-green);
+            color: black; padding: 10px; border-radius: 50%; font-size: 1.5rem;
+            display: none; animation: jump 0.5s infinite alternate; border: none;
         }
+        @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-10px); } }
 
-        /* --- ТАП-ЭФФЕКТ (+1) --- */
-        .floating-value {
-            position: absolute;
-            color: white;
-            font-weight: 800;
-            font-size: 2.5rem;
-            pointer-events: none;
-            z-index: 100;
-            animation: float-up 0.7s ease-out forwards;
-            text-shadow: 0 0 10px var(--neon-green);
+        /* --- НАВИГАЦИЯ --- */
+        .nav-bar {
+            width: 92%; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 30px;
+            display: flex; padding: 10px; margin-bottom: 35px; gap: 8px;
         }
-
-        @keyframes float-up {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-180px) scale(1.3); opacity: 0; }
+        .nav-item {
+            flex: 1; background: rgba(255,255,255,0.02); border-radius: 20px;
+            padding: 12px 0; text-align: center; transition: 0.3s; cursor: pointer;
         }
+        .nav-item:active { background: rgba(0, 255, 136, 0.1); transform: scale(0.95); }
+        .nav-item b { display: block; font-size: 0.7rem; color: #777; text-transform: uppercase; margin-top: 4px; }
 
-        /* --- НИЖНЯЯ ПАНЕЛЬ (iOS STYLE) --- */
-        .bottom-nav {
-            width: 92%;
-            background: var(--glass);
-            backdrop-filter: var(--ios-blur);
-            -webkit-backdrop-filter: var(--ios-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 35px;
-            padding: 12px;
-            margin-bottom: 40px;
-            display: flex;
-            gap: 10px;
-            z-index: 20;
-        }
-
-        .nav-btn {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.03);
-            border: none;
-            border-radius: 25px;
-            padding: 15px 0;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            transition: 0.3s;
-        }
-
-        .nav-btn:active {
-            background: rgba(0, 255, 136, 0.1);
-            transform: scale(0.94);
-        }
-
-        .nav-btn .icon { font-size: 1.4rem; }
-        .nav-btn span { font-size: 0.75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* --- ПРЕМИУМ ПАНЕЛИ (ВМЕСТО АЛЕРТОВ) --- */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            opacity: 0;
-            transition: 0.3s;
-        }
-
+        /* --- МАГАЗИН И ПАНЕЛИ --- */
         .sheet {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            background: #111;
-            border-top: 2px solid var(--neon-green);
-            border-radius: 40px 40px 0 0;
-            padding: 40px 25px 50px 25px;
-            z-index: 1001;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            position: fixed; bottom: -100%; left: 0; width: 100%; background: #0c0c0c;
+            border-top: 3px solid var(--neon-green); border-radius: 35px 35px 0 0;
+            padding: 30px 20px; z-index: 2000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .sheet.active { bottom: 0; }
-        .overlay.active { display: block; opacity: 1; }
-
-        .sheet-title {
-            font-size: 2rem;
-            color: var(--neon-green);
-            margin: 0 0 15px 0;
-            font-family: 'Montserrat';
+        .blur-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); display: none; z-index: 1500; }
+        
+        .upgrade-card {
+            background: #161618; padding: 20px; border-radius: 25px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid #222;
         }
+        .up-info h4 { margin: 0; font-size: 1.1rem; color: #fff; }
+        .up-info p { margin: 5px 0 0; font-size: 0.8rem; color: #666; }
+        .buy-btn { background: var(--neon-green); color: #000; border: none; padding: 10px 15px; border-radius: 12px; font-weight: 800; }
+        .buy-btn:disabled { background: #333; color: #666; }
 
-        .sheet-text {
-            color: #aaa;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
+        .tap-anim {
+            position: absolute; color: var(--neon-green); font-weight: 900; font-size: 2.2rem;
+            pointer-events: none; animation: upFade 0.7s forwards; z-index: 100;
         }
-
-        .sheet-close {
-            background: white;
-            color: black;
-            border: none;
-            width: 100%;
-            padding: 18px;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: 800;
-        }
-
-        /* ПРИВЕТСТВЕННЫЙ ЭКРАН */
-        #start-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 5000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .start-card {
-            width: 85%;
-            text-align: center;
-            background: #0a0a0a;
-            padding: 40px 25px;
-            border-radius: 40px;
-            border: 1px solid #1a1a1a;
-        }
-
-        .start-card h2 { color: var(--neon-green); font-size: 2.2rem; margin-bottom: 10px; font-family: 'Montserrat'; }
-        .start-btn {
-            margin-top: 30px;
-            background: var(--neon-green);
-            color: black;
-            padding: 20px;
-            border-radius: 20px;
-            font-weight: 900;
-            display: block;
-            text-decoration: none;
-            font-size: 1.2rem;
-        }
+        @keyframes upFade { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
-
-    <!-- ЭКРАН ПРИ ВХОДЕ -->
-    <div id="start-screen">
-        <div class="start-card">
+    <!-- ПРОВЕРКА ПОДПИСКИ -->
+    <div id="sub-lock">
+        <div class="lock-card">
             <h2>VILL COIN</h2>
-            <p style="color: #666;">Самый быстрый кликер в твоем селе. Собирай монеты и жди дроп!</p>
-            <a href="#" class="start-btn" onclick="startGame()">НАЧАТЬ МАЙНИНГ</a>
+            <p style="color: #888;">Чтобы начать путь к листингу и сохранять прогресс, подпишись на официальный канал!</p>
+            <a href="https://t.me/VillCoin" target="_blank" class="btn-sub" onclick="markSub()">1. ПОДПИСАТЬСЯ</a>
+            <button class="btn-check" onclick="checkSub()">2. ПРОВЕРИТЬ И ЗАЙТИ</button>
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <!-- ИГРОВОЙ ЭКРАН -->
+    <div class="profile-box">
+        <span>ВРЕМЯ В СЕТИ: <b id="play-time">00:00</b></span>
+        <span>КЛИК: <b id="click-power">1</b></span>
+    </div>
+
     <div class="header">
-        <div id="score-container">
-            <h1 id="score">0</h1>
-        </div>
-        <div class="currency-name">$VILL COINS</div>
+        <h1 id="score">0</h1>
+        <div style="color: var(--neon-green); font-weight: 900; letter-spacing: 4px;">$VILL COIN</div>
     </div>
 
-    <div id="game-container">
-        <div class="coin-base">
-            <div class="coin-outer-glow"></div>
+    <button id="gift-btn" onclick="takeGift()">🎁</button>
+
+    <div id="game-area">
+        <div class="coin-wrap">
+            <div class="cd-ring"></div>
+            <div id="cd-fill" class="cd-fill"></div>
             <div id="main-coin"></div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <button class="nav-btn" onclick="showSheet('shop')">
-            <div class="icon">💎</div>
-            <span>Магазин</span>
-        </button>
-        <button class="nav-btn" onclick="showSheet('ads')">
-            <div class="icon">🚀</div>
-            <span>Реклама</span>
-        </button>
-        <button class="nav-btn" onclick="showSheet('info')">
-            <div class="icon">📈</div>
-            <span>Инфо</span>
-        </button>
+    <div class="nav-bar">
+        <div class="nav-item" onclick="openSheet('shop')">
+            <span style="font-size: 1.3rem;">💎</span>
+            <b>Магазин</b>
+        </div>
+        <div class="nav-item" onclick="openSheet('stats')">
+            <span style="font-size: 1.3rem;">📊</span>
+            <b>Инфо</b>
+        </div>
+        <div class="nav-item" onclick="openSheet('collab')">
+            <span style="font-size: 1.3rem;">🤝</span>
+            <b>Сотрудничество</b>
+        </div>
     </div>
 
-    <!-- КАСТОМНЫЕ ПАНЕЛИ (ВМЕСТО СЕРЫХ ОКОШЕК) -->
-    <div id="overlay" class="overlay" onclick="hideSheet()"></div>
-    <div id="sheet" class="sheet">
-        <h2 id="sheet-h" class="sheet-title">Заголовок</h2>
-        <p id="sheet-p" class="sheet-text">Описание...</p>
-        <button class="sheet-close" onclick="hideSheet()">ПОНЯТНО</button>
+    <!-- ПАНЕЛИ -->
+    <div id="blur" class="blur-bg" onclick="closeAll()"></div>
+    
+    <!-- МАГАЗИН -->
+    <div id="sheet-shop" class="sheet">
+        <h2 style="color: var(--neon-green); font-family: Montserrat;">UPGRADES</h2>
+        <div class="upgrade-card">
+            <div class="up-info">
+                <h4>Мульти-тап</h4>
+                <p id="cost-mt">Цена: 100 $VILL</p>
+            </div>
+            <button class="buy-btn" id="btn-mt" onclick="buyUpgrade('mt')">КУПИТЬ</button>
+        </div>
+        <div class="upgrade-card">
+            <div class="up-info">
+                <h4>Авто-майнер</h4>
+                <p id="cost-am">Цена: 500 $VILL</p>
+            </div>
+            <button class="buy-btn" id="btn-am" onclick="buyUpgrade('am')">КУПИТЬ</button>
+        </div>
+        <button class="btn-check" style="margin-top: 20px;" onclick="closeAll()">ЗАКРЫТЬ</button>
+    </div>
+
+    <!-- СОТРУДНИЧЕСТВО -->
+    <div id="sheet-collab" class="sheet">
+        <h2 style="color: var(--neon-green); font-family: Montserrat;">COLLAB</h2>
+        <p style="color: #aaa; line-height: 1.6;">Для покупки рекламы или предложений по листингу пишите менеджеру:</p>
+        <a href="https://t.me/VillCoin_Manager" target="_blank" style="color: var(--neon-green); font-size: 1.4rem; font-weight: 800; text-decoration: none; display: block; margin: 20px 0;">@VillCoin_Manager</a>
+        <button class="btn-check" onclick="closeAll()">НАЗАД</button>
     </div>
 
     <script>
-        // --- СИСТЕМА СОХРАНЕНИЯ (РАБОТАЕТ НА ТВОЕМ LENOVO) ---
-        let balance = parseInt(localStorage.getItem('v_bal')) || 0;
-        let totalClicks = parseInt(localStorage.getItem('v_total')) || 0;
+        // ДАННЫЕ
+        let score = parseInt(localStorage.getItem('v2_score')) || 0;
+        let mt_lvl = parseInt(localStorage.getItem('v2_mt')) || 1;
+        let am_lvl = parseInt(localStorage.getItem('v2_am')) || 0;
+        let isSubbed = localStorage.getItem('v2_subbed') === 'true';
+        let seconds = parseInt(localStorage.getItem('v2_time')) || 0;
         
-        const scoreDisplay = document.getElementById('score');
-        scoreDisplay.innerText = balance.toLocaleString();
+        let canClick = true;
 
-        function startGame() {
-            document.getElementById('start-screen').style.transition = '0.8s';
-            document.getElementById('start-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('start-screen').style.display = 'none';
-            }, 800);
+        // ЭЛЕМЕНТЫ
+        const scoreEl = document.getElementById('score');
+        const mtCostEl = document.getElementById('cost-mt');
+        const amCostEl = document.getElementById('cost-am');
+        const timeEl = document.getElementById('play-time');
+        const powerEl = document.getElementById('click-power');
+
+        // ИНИЦИАЛИЗАЦИЯ
+        if(isSubbed) document.getElementById('sub-lock').style.display = 'none';
+        updateUI();
+
+        // ТАЙМЕР В СЕТИ
+        setInterval(() => {
+            seconds++;
+            let m = Math.floor(seconds / 60);
+            let s = seconds % 60;
+            timeEl.innerText = `${m}:${s < 10 ? '0'+s : s}`;
+            if(seconds % 10 === 0) localStorage.setItem('v2_time', seconds);
+            
+            // Награда каждые 3 минуты
+            if(seconds > 0 && seconds % 180 === 0) document.getElementById('gift-btn').style.display = 'block';
+
+            // Авто-майнер
+            if(am_lvl > 0) {
+                score += am_lvl;
+                updateUI();
+            }
+        }, 1000);
+
+        function markSub() { localStorage.setItem('clicked_link', 'true'); }
+        function checkSub() {
+            if(localStorage.getItem('clicked_link') === 'true') {
+                isSubbed = true;
+                localStorage.setItem('v2_subbed', 'true');
+                document.getElementById('sub-lock').style.opacity = '0';
+                setTimeout(() => document.getElementById('sub-lock').style.display = 'none', 500);
+            } else {
+                alert("Сначала перейди по ссылке и подпишись!");
+            }
         }
 
-        // --- ЛОГИКА КЛИКА ---
-        const coin = document.getElementById('main-coin');
-        
-        function processClick(e) {
+        // КЛИК
+        document.getElementById('main-coin').addEventListener('touchstart', (e) => {
+            if(!canClick) return;
             e.preventDefault();
             
-            balance++;
-            totalClicks++;
+            score += mt_lvl;
+            updateUI();
             
-            // Обновляем экран
-            scoreDisplay.innerText = balance.toLocaleString();
-            
-            // Сохраняем в память браузера
-            localStorage.setItem('v_bal', balance);
-            localStorage.setItem('v_total', totalClicks);
+            // КД 0.5 сек
+            canClick = false;
+            document.getElementById('cd-fill').style.clipPath = 'inset(0 0 0 0)';
+            setTimeout(() => {
+                canClick = true;
+                document.getElementById('cd-fill').style.clipPath = 'inset(0 0 100% 0)';
+            }, 500);
 
-            // Анимация нажатия
-            coin.style.transform = 'scale(0.9) translateY(8px)';
-            setTimeout(() => coin.style.transform = 'scale(1) translateY(0)', 50);
+            // Анимация текста
+            let x = e.touches[0].clientX;
+            let y = e.touches[0].clientY;
+            let t = document.createElement('div');
+            t.className = 'tap-anim';
+            t.innerText = `+${mt_lvl}`;
+            t.style.left = x + 'px'; t.style.top = y + 'px';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 700);
 
-            // Эффект вылетающей цифры
-            const x = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-            const y = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-            showFloatText(x, y);
+            if(navigator.vibrate) navigator.vibrate(30);
+            save();
+        });
 
-            // Вибрация (для мобилок)
-            if (navigator.vibrate) navigator.vibrate(20);
-        }
-
-        coin.addEventListener('touchstart', processClick);
-        coin.addEventListener('mousedown', (e) => { if(e.button === 0) processClick(e); });
-
-        function showFloatText(x, y) {
-            const txt = document.createElement('div');
-            txt.className = 'floating-value';
-            txt.innerText = '+1';
-            txt.style.left = `${x - 20}px`;
-            txt.style.top = `${y - 40}px`;
-            document.body.appendChild(txt);
-            setTimeout(() => txt.remove(), 700);
-        }
-
-        // --- УПРАВЛЕНИЕ ПРЕМИУМ-ПАНЕЛЯМИ ---
-        const overlay = document.getElementById('overlay');
-        const sheet = document.getElementById('sheet');
-        const sheetH = document.getElementById('sheet-h');
-        const sheetP = document.getElementById('sheet-p');
-
-        function showSheet(type) {
-            if (type === 'shop') {
-                sheetH.innerText = "Магазин";
-                sheetP.innerText = "Улучшения (авто-кликер и мульти-тап) сейчас в разработке. Твои монеты сохраняются, копи их для покупки бустов в версии 2.0!";
-            } else if (type === 'ads') {
-                sheetH.innerText = "Реклама";
-                sheetP.innerText = "Хочешь продвинуть свой канал или проект? Связь с владельцем: @VillCoin_Manager. Цены для своих — копейки.";
-            } else if (type === 'info') {
-                sheetH.innerText = "Твоя Статистика";
-                sheetP.innerText = `Всего сделано тапов: ${totalClicks}\nТекущий баланс: ${balance} $VILL\n\nПрогресс надежно сохранен в памяти устройства.`;
-            }
-            
-            overlay.classList.add('active');
-            sheet.classList.add('active');
-        }
-
-        function hideSheet() {
-            overlay.classList.remove('active');
-            sheet.classList.remove('active');
-        }
-
-        // --- СЕКРЕТНЫЙ АДМИН-РЕЖИМ (1505) ---
-        let tapSeq = 0;
-        scoreDisplay.parentElement.onclick = () => {
-            tapSeq++;
-            if(tapSeq >= 5) {
-                let code = prompt("Введите код доступа:");
-                if(code === "1505") {
-                    let bonus = prompt("Сколько начислить?");
-                    balance += parseInt(bonus) || 0;
-                    scoreDisplay.innerText = balance.toLocaleString();
-                    localStorage.setItem('v_bal', balance);
+        function buyUpgrade(type) {
+            if(type === 'mt') {
+                let cost = mt_lvl * 150;
+                if(score >= cost) {
+                    score -= cost;
+                    mt_lvl++;
                 }
-                tapSeq = 0;
+            } else {
+                let cost = (am_lvl + 1) * 600;
+                if(score >= cost) {
+                    score -= cost;
+                    am_lvl++;
+                }
             }
-            setTimeout(() => tapSeq = 0, 2000);
-        };
+            updateUI();
+            save();
+        }
+
+        function takeGift() {
+            score += 250;
+            document.getElementById('gift-btn').style.display = 'none';
+            updateUI();
+            save();
+            alert("Ты получил 250 $VILL за активность!");
+        }
+
+        function updateUI() {
+            scoreEl.innerText = score.toLocaleString();
+            powerEl.innerText = mt_lvl;
+            mtCostEl.innerText = `Цена: ${mt_lvl * 150} $VILL`;
+            amCostEl.innerText = `Цена: ${(am_lvl + 1) * 600} $VILL`;
+            
+            document.getElementById('btn-mt').disabled = score < (mt_lvl * 150);
+            document.getElementById('btn-am').disabled = score < ((am_lvl + 1) * 600);
+        }
+
+        function save() {
+            localStorage.setItem('v2_score', score);
+            localStorage.setItem('v2_mt', mt_lvl);
+            localStorage.setItem('v2_am', am_lvl);
+        }
+
+        function openSheet(id) {
+            document.getElementById('blur').style.display = 'block';
+            document.getElementById('sheet-' + id).classList.add('active');
+        }
+
+        function closeAll() {
+            document.querySelectorAll('.sheet').forEach(s => s.classList.remove('active'));
+            document.getElementById('blur').style.display = 'none';
+        }
     </script>
 </body>
 </html>
