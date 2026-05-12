@@ -2,224 +2,227 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>$VILL COIN | Official App</title>
-    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VillCoin - Тапай и зарабатывай</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --main-green: #2ecc71;
-            --dark-bg: #000000;
-            --glass: rgba(255, 255, 255, 0.1);
-        }
-
         body {
-            background: var(--dark-bg);
-            color: white;
-            font-family: 'SF Pro Display', -apple-system, sans-serif;
             margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            user-select: none;
         }
 
-        /* WELCOME SCREEN */
         #welcome-screen {
             position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 100;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            z-index: 100;
             text-align: center;
             padding: 20px;
-            backdrop-filter: blur(10px);
         }
 
-        .ios-card {
-            background: var(--glass);
-            padding: 30px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-            width: 80%;
-        }
-
-        .btn-ios {
-            background: white;
-            color: black;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: transform 0.2s;
-        }
-
-        /* 3D COIN */
-        .coin-wrap {
-            margin-top: 80px;
-            perspective: 1000px;
-        }
-
-        .coin {
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, var(--main-green) 0%, #1a5c3a 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 100px;
-            font-weight: bold;
-            border: 8px solid white;
-            box-shadow: 0 0 50px rgba(46, 204, 113, 0.4), inset 0 0 20px rgba(0,0,0,0.5);
-            transition: transform 0.1s;
-            position: relative;
-        }
-
-        .coin::after {
-            content: 'V';
+        .btn-sub {
+            background: #0088cc;
             color: white;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
         }
 
-        /* HUD & STATS */
-        .stats {
+        #score-container {
+            margin-top: 50px;
             text-align: center;
-            margin-top: 30px;
         }
 
-        .balance {
-            font-size: 50px;
-            font-weight: 600;
-            margin: 10px 0;
-            letter-spacing: -1px;
-        }
-
-        /* NAVIGATION BAR */
-        .nav-bar {
-            position: fixed;
-            bottom: 20px;
-            width: 90%;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .nav-item {
-            font-size: 12px;
-            color: #888;
-            text-align: center;
+        #score {
+            font-size: 4rem;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            color: #ffd700;
             cursor: pointer;
         }
 
-        .nav-item.active { color: var(--main-green); }
-
-        /* NOTIFICATIONS */
-        .toast {
-            position: fixed;
-            top: 20px;
-            background: var(--main-green);
-            color: black;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            transform: translateY(-100px);
-            transition: transform 0.4s;
+        #coin-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
         }
 
-        .show { transform: translateY(0); }
+        #coin {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, #ffd700, #b8860b);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(184, 134, 11, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: transform 0.05s ease-out;
+            border: 10px solid #daa520;
+        }
+
+        #coin span {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #daa520;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .footer-btns {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: 30px;
+        }
+
+        .btn-footer {
+            background: rgba(255,255,255,0.1);
+            padding: 12px 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 100px;
+            background: #4caf50;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: none;
+            animation: fadeInUp 0.3s;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-<div id="welcome-screen">
-    <div class="ios-card">
-        <h1 style="color:var(--main-green)">$VILL COIN</h1>
-        <p>Привет! Зарабатывай $VILL просто кликая по монете. Выполняй задания и жди листинг!</p>
-        <button class="btn-ios" onclick="checkSub()">Подписаться и Начать</button>
+    <div id="welcome-screen">
+        <h1>VILL COIN</h1>
+        <p>Подпишись на канал, чтобы начать играть!</p>
+        <a href="https://t.me/VillCoin" target="_blank" class="btn-sub" onclick="checkSub()">ПОДПИСАТЬСЯ</a>
     </div>
-</div>
 
-<div id="toast" class="toast">Бонус +50 $VILL!</div>
+    <div id="score-container">
+        <div id="score">0</div>
+        <p style="color: #888;">$VILL COINS</p>
+    </div>
 
-<div class="stats">
-    <div style="color: #888">Ваш баланс</div>
-    <div class="balance" id="score">0</div>
-    <div id="clicks-left" style="font-size: 14px; color: var(--main-green)">До бонуса: 100</div>
-</div>
+    <div id="coin-container">
+        <div id="coin" onclick="tap(event)">
+            <span>V</span>
+        </div>
+    </div>
 
-<div class="coin-wrap" onclick="tap(event)">
-    <div class="coin" id="coin"></div>
-</div>
+    <div id="toast">Бонус +50 коинов!</div>
 
-<div class="nav-bar">
-    <div class="nav-item active">🪙<br>Майнинг</div>
-    <div class="nav-item" onclick="alert('Задания скоро появятся!')">🎁<br>Бонусы</div>
-    <div class="nav-item" onclick="showAds()">🤝<br>Реклама</div>
-</div>
+    <div class="footer-btns">
+        <button class="btn-footer" onclick="alert('Скоро: Магазин улучшений!')">МАГАЗИН</button>
+        <button class="btn-footer" onclick="showAds()">РЕКЛАМА</button>
+    </div>
 
-<script>
-    let score = parseInt(localStorage.getItem('vill_score')) || 0;
-    let clicks = 0;
-    const scoreEl = document.getElementById('score');
-    const clicksEl = document.getElementById('clicks-left');
+    <script>
+        // --- ЛОГИКА ИГРЫ ---
+        
+        // 1. Загрузка прогресса из памяти (чтобы ничего не пропадало)
+        let score = parseInt(localStorage.getItem('vill_score')) || 0;
+        let clicks = 0;
+        let totalTaps = parseInt(localStorage.getItem('vill_total_taps')) || 0;
 
-    scoreEl.innerText = score;
+        const scoreEl = document.getElementById('score');
+        scoreEl.innerText = score;
 
-    function checkSub() {
-        // Тут вставь ссылку на свой ТГ канал
-        window.open('https://t.me/твой_канал', '_blank');
-        setTimeout(() => {
-            document.getElementById('welcome-screen').style.display = 'none';
-        }, 1000);
-    }
-
-    function tap(event) {
-        score++;
-        clicks++;
-        updateUI();
-
-        // Анимация монеты
-        const coin = document.getElementById('coin');
-        coin.style.transform = 'scale(0.95) rotateX(10deg)';
-        setTimeout(() => coin.style.transform = 'scale(1) rotateX(0)', 50);
-
-        // Бонус каждые 100 кликов
-        if (clicks >= 100) {
-            score += 50;
-            clicks = 0;
-            showToast();
+        // 2. Вход после подписки
+        function checkSub() {
+            setTimeout(() => {
+                document.getElementById('welcome-screen').style.display = 'none';
+            }, 1000);
         }
 
-        // Вибрация (для мобилок)
-        if (navigator.vibrate) navigator.vibrate(40);
-        
-        localStorage.setItem('vill_score', score);
-    }
+        // 3. Тап по монете
+        function tap(event) {
+            score++;
+            clicks++;
+            totalTaps++;
+            updateUI();
 
-    function updateUI() {
-        scoreEl.innerText = score;
-        clicksEl.innerText = `До бонуса: ${100 - clicks}`;
-    }
+            // Анимация нажатия
+            const coin = document.getElementById('coin');
+            coin.style.transform = 'scale(0.95) rotateX(10deg)';
+            setTimeout(() => coin.style.transform = 'scale(1) rotateX(0)', 50);
 
-    function showToast() {
-        const t = document.getElementById('toast');
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2000);
-    }
+            // Бонус за 100 кликов
+            if (clicks >= 100) {
+                score += 50;
+                clicks = 0;
+                showToast();
+            }
 
-    function showAds() {
-        alert("Сотрудничество и реклама: @твой_ник_в_тг \nПишите для размещения!");
-    }
-</script>
+            // Вибрация (для мобилок)
+            if (navigator.vibrate) navigator.vibrate(40);
 
+            // Авто-сохранение в память устройства
+            saveData();
+        }
+
+        function updateUI() {
+            scoreEl.innerText = score;
+        }
+
+        function saveData() {
+            localStorage.setItem('vill_score', score);
+            localStorage.setItem('vill_total_taps', totalTaps);
+        }
+
+        // 4. СЕКРЕТНАЯ АДМИНКА (пароль 1505)
+        let adminCounter = 0;
+        scoreEl.onclick = function() {
+            adminCounter++;
+            if (adminCounter >= 5) {
+                let pass = prompt("Введите пароль владельца:");
+                if (pass === "1505") {
+                    alert(`📊 АДМИНКА VillCoin\n\nТвой баланс: ${score}\nВсего кликов: ${totalTaps}\nСохранение: АКТИВНО`);
+                }
+                adminCounter = 0;
+            }
+            setTimeout(() => adminCounter = 0, 2000);
+        };
+
+        // 5. Рекламный контакт
+        function showAds() {
+            alert('Сотрудничество и реклама: @VillCoin_Manager \nПишите для размещения!');
+        }
+
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2000);
+        }
+    </script>
 </body>
 </html>
