@@ -2,167 +2,224 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Banana Tap Pro</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>$VILL COIN | Official App</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f1012;
-            --card-bg: #1c1d21;
-            --accent-color: #f3ba2f;
-            --text-main: #ffffff;
-            --text-secondary: #8e8e93;
+            --main-green: #2ecc71;
+            --dark-bg: #000000;
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'SF Pro Display', -apple-system, sans-serif;
             margin: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: -apple-system, system-ui, sans-serif;
-            height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .header {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-block {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--card-bg);
-            padding: 5px 12px;
-            border-radius: 20px;
-        }
-
-        .balance-block {
-            background: var(--card-bg);
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            border: 1px solid rgba(243, 186, 47, 0.3);
-        }
-
-        .click-area {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        #banana {
-            width: 250px;
-            filter: drop-shadow(0 0 40px rgba(243, 186, 47, 0.2));
-            transition: transform 0.05s ease;
-            z-index: 2;
-            cursor: pointer;
-        }
-
-        #banana:active { transform: scale(0.92); }
-
-        .tap-effect {
-            position: absolute;
-            color: var(--accent-color);
-            font-size: 32px;
-            font-weight: bold;
-            pointer-events: none;
-            animation: fly 0.8s ease-out forwards;
-            z-index: 10;
-        }
-
-        @keyframes fly {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-150px) scale(1.5); }
-        }
-
-        .footer-nav {
-            background: #16171b;
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 10px 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-btn {
+        /* WELCOME SCREEN */
+        #welcome-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            color: var(--text-secondary);
-            font-size: 10px;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
         }
 
-        .nav-btn.active { color: var(--accent-color); }
+        .ios-card {
+            background: var(--glass);
+            padding: 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 80%;
+        }
 
-        .nav-icon {
-            width: 24px;
-            height: 24px;
+        .btn-ios {
+            background: white;
+            color: black;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        /* 3D COIN */
+        .coin-wrap {
+            margin-top: 80px;
+            perspective: 1000px;
+        }
+
+        .coin {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, var(--main-green) 0%, #1a5c3a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            font-weight: bold;
+            border: 8px solid white;
+            box-shadow: 0 0 50px rgba(46, 204, 113, 0.4), inset 0 0 20px rgba(0,0,0,0.5);
+            transition: transform 0.1s;
+            position: relative;
+        }
+
+        .coin::after {
+            content: 'V';
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* HUD & STATS */
+        .stats {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .balance {
+            font-size: 50px;
+            font-weight: 600;
+            margin: 10px 0;
+            letter-spacing: -1px;
+        }
+
+        /* NAVIGATION BAR */
+        .nav-bar {
+            position: fixed;
+            bottom: 20px;
+            width: 90%;
             background: rgba(255,255,255,0.05);
-            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border: 1px solid rgba(255,255,255,0.1);
         }
+
+        .nav-item {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .nav-item.active { color: var(--main-green); }
+
+        /* NOTIFICATIONS */
+        .toast {
+            position: fixed;
+            top: 20px;
+            background: var(--main-green);
+            color: black;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            transform: translateY(-100px);
+            transition: transform 0.4s;
+        }
+
+        .show { transform: translateY(0); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="user-block">
-            <div style="width:24px;height:24px;background:#4a4a4a;border-radius:50%;text-align:center;font-size:12px;line-height:24px;">U</div>
-            <span id="user-name">User</span>
-        </div>
-        <div class="balance-block">
-            <span style="color: var(--accent-color)">★</span>
-            <span id="score">0</span>
-        </div>
+<div id="welcome-screen">
+    <div class="ios-card">
+        <h1 style="color:var(--main-green)">$VILL COIN</h1>
+        <p>Привет! Зарабатывай $VILL просто кликая по монете. Выполняй задания и жди листинг!</p>
+        <button class="btn-ios" onclick="checkSub()">Подписаться и Начать</button>
     </div>
+</div>
 
-    <div class="click-area" id="touch-zone">
-        <img id="banana" src="https://www.pngall.com/wp-content/uploads/11/Banana-No-Background.png" alt="Banana">
-    </div>
+<div id="toast" class="toast">Бонус +50 $VILL!</div>
 
-    <div class="footer-nav">
-        <div class="nav-btn"><span>Промо</span></div>
-        <div class="nav-btn"><span>Реф</span></div>
-        <div class="nav-btn active"><span>Кейсы</span></div>
-        <div class="nav-btn"><span>Задания</span></div>
-        <div class="nav-btn"><span>Профиль</span></div>
-    </div>
+<div class="stats">
+    <div style="color: #888">Ваш баланс</div>
+    <div class="balance" id="score">0</div>
+    <div id="clicks-left" style="font-size: 14px; color: var(--main-green)">До бонуса: 100</div>
+</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+<div class="coin-wrap" onclick="tap(event)">
+    <div class="coin" id="coin"></div>
+</div>
 
-        let count = 0;
-        const scoreEl = document.getElementById('score');
-        const userName = tg.initDataUnsafe?.user?.first_name || "User";
-        document.getElementById('user-name').innerText = userName;
+<div class="nav-bar">
+    <div class="nav-item active">🪙<br>Майнинг</div>
+    <div class="nav-item" onclick="alert('Задания скоро появятся!')">🎁<br>Бонусы</div>
+    <div class="nav-item" onclick="showAds()">🤝<br>Реклама</div>
+</div>
 
-        document.getElementById('touch-zone').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            count++;
-            scoreEl.innerText = count;
+<script>
+    let score = parseInt(localStorage.getItem('vill_score')) || 0;
+    let clicks = 0;
+    const scoreEl = document.getElementById('score');
+    const clicksEl = document.getElementById('clicks-left');
 
-            // Та самая вибрация
-            tg.HapticFeedback.impactOccurred('medium');
+    scoreEl.innerText = score;
 
-            const touch = e.touches[0];
-            const p = document.createElement('div');
-            p.className = 'tap-effect';
-            p.innerText = '+1';
-            p.style.left = touch.pageX + 'px';
-            p.style.top = touch.pageY + 'px';
-            document.body.appendChild(p);
+    function checkSub() {
+        // Тут вставь ссылку на свой ТГ канал
+        window.open('https://t.me/твой_канал', '_blank');
+        setTimeout(() => {
+            document.getElementById('welcome-screen').style.display = 'none';
+        }, 1000);
+    }
 
-            setTimeout(() => p.remove(), 800);
-        });
-    </script>
+    function tap(event) {
+        score++;
+        clicks++;
+        updateUI();
+
+        // Анимация монеты
+        const coin = document.getElementById('coin');
+        coin.style.transform = 'scale(0.95) rotateX(10deg)';
+        setTimeout(() => coin.style.transform = 'scale(1) rotateX(0)', 50);
+
+        // Бонус каждые 100 кликов
+        if (clicks >= 100) {
+            score += 50;
+            clicks = 0;
+            showToast();
+        }
+
+        // Вибрация (для мобилок)
+        if (navigator.vibrate) navigator.vibrate(40);
+        
+        localStorage.setItem('vill_score', score);
+    }
+
+    function updateUI() {
+        scoreEl.innerText = score;
+        clicksEl.innerText = `До бонуса: ${100 - clicks}`;
+    }
+
+    function showToast() {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function showAds() {
+        alert("Сотрудничество и реклама: @твой_ник_в_тг \nПишите для размещения!");
+    }
+</script>
+
 </body>
 </html>
