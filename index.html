@@ -4,313 +4,438 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VillCoin Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Подключаем шрифты для дорогого вида -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-green: #00ff88;
-            --dark-bg: #0a0a0b;
-            --card-bg: #161618;
-            --ios-blur: rgba(255, 255, 255, 0.05);
+            --neon-green: #00ff88;
+            --deep-green: #004d2c;
+            --dark-bg: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --ios-blur: blur(20px);
         }
 
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--dark-bg);
-            color: white;
-            font-family: 'SF Pro Display', -apple-system, sans-serif;
-            display: flex; flex-direction: column; align-items: center;
-            height: 100vh; overflow: hidden; user-select: none;
+        * {
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* ПРЕМИУМ ПРИВЕТСТВИЕ */
-        #welcome-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, #000 0%, #0a0a0b 100%);
-            z-index: 1000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; transition: 0.5s ease;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            user-select: none;
         }
 
-        .welcome-card {
-            background: var(--card-bg);
-            width: 85%; padding: 30px; border-radius: 35px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        /* --- ФОНОВЫЕ ЭФФЕКТЫ --- */
+        .bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 60%);
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .welcome-card h1 { 
-            color: var(--primary-green); font-size: 2.2rem; margin: 0; 
-            font-family: 'Montserrat', sans-serif; text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        /* --- ШАПКА И БАЛАНС --- */
+        .header {
+            margin-top: 60px;
+            text-align: center;
+            z-index: 10;
         }
 
-        .btn-main {
-            background: white; color: black;
-            padding: 18px 0; width: 100%; border-radius: 20px;
-            font-weight: 700; text-decoration: none; display: block;
-            margin-top: 25px; transition: 0.3s; font-size: 1.1rem;
+        #score-container {
+            position: relative;
+            display: inline-block;
         }
-
-        .btn-main:active { transform: scale(0.96); opacity: 0.9; }
-
-        /* ОСНОВНОЙ ИНТЕРФЕЙС */
-        .header { margin-top: 40px; text-align: center; }
 
         #score {
-            font-size: 4.5rem; font-weight: 800; margin: 0;
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(180deg, #fff 30%, #00ff88 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
+            font-size: 5rem;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(180deg, #FFFFFF 40%, var(--neon-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.3));
+            transition: transform 0.1s ease;
         }
 
-        .currency-label {
-            color: var(--primary-green); letter-spacing: 4px;
-            font-weight: 600; font-size: 0.9rem; opacity: 0.8;
+        .currency-name {
+            color: var(--neon-green);
+            font-weight: 800;
+            letter-spacing: 5px;
+            font-size: 1rem;
+            margin-top: -10px;
+            opacity: 0.9;
+            text-transform: uppercase;
         }
 
-        /* МОНЕТА */
-        #game-area {
-            flex-grow: 1; display: flex; justify-content: center;
-            align-items: center; width: 100%; position: relative;
+        /* --- ИГРОВАЯ ЗОНА --- */
+        #game-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
         }
 
-        .coin-wrapper {
-            position: relative; width: 280px; height: 280px;
-            display: flex; justify-content: center; align-items: center;
+        .coin-base {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .coin-glow {
-            position: absolute; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%);
-            animation: pulse 2s infinite;
+        /* Анимированное свечение под монетой */
+        .coin-outer-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse-glow 3s infinite ease-in-out;
         }
 
-        @keyframes pulse { 
-            0% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.2); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 0.5; }
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.15); opacity: 0.6; }
         }
 
-        #coin {
-            width: 260px; height: 260px;
-            background: radial-gradient(circle at 30% 30%, #2a2a2a, #000);
-            border-radius: 50%; position: relative; z-index: 2;
-            display: flex; justify-content: center; align-items: center;
-            border: 4px solid #1a1a1a;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,255,136,0.1);
+        #main-coin {
+            width: 270px;
+            height: 270px;
+            background: radial-gradient(circle at 35% 35%, #1a1a1a 0%, #000 100%);
+            border-radius: 50%;
+            border: 6px solid #111;
+            box-shadow: 
+                0 0 0 2px rgba(0, 255, 136, 0.1),
+                0 20px 50px rgba(0, 0, 0, 0.9),
+                inset 0 0 30px rgba(0, 255, 136, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 5;
             transition: transform 0.05s cubic-bezier(0, 0, 0.2, 1);
         }
 
-        #coin img { width: 160px; pointer-events: none; }
-        
-        /* Если картинки нет - будет буква V */
-        #coin::after {
-            content: "V"; font-size: 100px; font-family: 'Montserrat';
-            color: var(--primary-green); text-shadow: 0 0 20px rgba(0,255,136,0.5);
+        #main-coin::before {
+            content: "V";
+            font-family: 'Montserrat', sans-serif;
+            font-size: 110px;
+            color: var(--neon-green);
+            text-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+            font-weight: 900;
         }
 
-        /* НИЖНЯЯ ПАНЕЛЬ */
-        .nav-bar {
-            width: 90%; background: var(--ios-blur);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 30px; display: flex; padding: 10px;
-            margin-bottom: 30px; justify-content: space-between;
+        /* --- ТАП-ЭФФЕКТ (+1) --- */
+        .floating-value {
+            position: absolute;
+            color: white;
+            font-weight: 800;
+            font-size: 2.5rem;
+            pointer-events: none;
+            z-index: 100;
+            animation: float-up 0.7s ease-out forwards;
+            text-shadow: 0 0 10px var(--neon-green);
         }
 
-        .nav-item {
-            flex: 1; text-align: center; padding: 12px 0;
-            border-radius: 22px; transition: 0.2s; cursor: pointer;
-        }
-
-        .nav-item:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
-        .nav-item span { display: block; font-size: 0.7rem; margin-top: 4px; font-weight: 600; color: #888; }
-        .nav-item i { font-size: 1.4rem; color: white; }
-
-        /* ЭФФЕКТ ТАПА */
-        .tap-number {
-            position: absolute; color: white; font-weight: 800;
-            font-size: 2.2rem; pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards; z-index: 100;
-            text-shadow: 0 0 10px var(--primary-green);
-        }
-
-        @keyframes floatUp {
+        @keyframes float-up {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-150px) scale(1.2); opacity: 0; }
+            100% { transform: translateY(-180px) scale(1.3); opacity: 0; }
         }
 
-        /* МОДАЛЬНЫЕ ОКНА */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            display: none; z-index: 2000; align-items: flex-end;
+        /* --- НИЖНЯЯ ПАНЕЛЬ (iOS STYLE) --- */
+        .bottom-nav {
+            width: 92%;
+            background: var(--glass);
+            backdrop-filter: var(--ios-blur);
+            -webkit-backdrop-filter: var(--ios-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 12px;
+            margin-bottom: 40px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
         }
 
-        .modal-content {
-            background: var(--card-bg); width: 100%;
-            border-radius: 40px 40px 0 0; padding: 40px 20px;
-            border-top: 1px solid var(--primary-green);
-            transform: translateY(100%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        .nav-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 0;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: 0.3s;
         }
 
-        .modal.active { display: flex; }
-        .modal.active .modal-content { transform: translateY(0); }
+        .nav-btn:active {
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(0.94);
+        }
 
-        .modal-h { font-size: 1.8rem; margin: 0 0 15px 0; color: var(--primary-green); }
-        .modal-p { color: #aaa; line-height: 1.5; margin-bottom: 25px; }
-        .close-btn { background: #333; color: white; border: none; padding: 15px; width: 100%; border-radius: 20px; font-weight: 700; }
+        .nav-btn .icon { font-size: 1.4rem; }
+        .nav-btn span { font-size: 0.75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- ПРЕМИУМ ПАНЕЛИ (ВМЕСТО АЛЕРТОВ) --- */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            background: #111;
+            border-top: 2px solid var(--neon-green);
+            border-radius: 40px 40px 0 0;
+            padding: 40px 25px 50px 25px;
+            z-index: 1001;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        .sheet.active { bottom: 0; }
+        .overlay.active { display: block; opacity: 1; }
+
+        .sheet-title {
+            font-size: 2rem;
+            color: var(--neon-green);
+            margin: 0 0 15px 0;
+            font-family: 'Montserrat';
+        }
+
+        .sheet-text {
+            color: #aaa;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .sheet-close {
+            background: white;
+            color: black;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        /* ПРИВЕТСТВЕННЫЙ ЭКРАН */
+        #start-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 5000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .start-card {
+            width: 85%;
+            text-align: center;
+            background: #0a0a0a;
+            padding: 40px 25px;
+            border-radius: 40px;
+            border: 1px solid #1a1a1a;
+        }
+
+        .start-card h2 { color: var(--neon-green); font-size: 2.2rem; margin-bottom: 10px; font-family: 'Montserrat'; }
+        .start-btn {
+            margin-top: 30px;
+            background: var(--neon-green);
+            color: black;
+            padding: 20px;
+            border-radius: 20px;
+            font-weight: 900;
+            display: block;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ПРИВЕТСТВИЕ -->
-    <div id="welcome-screen">
-        <div class="welcome-card">
-            <h1>$VILL COIN</h1>
-            <p style="color: #888; margin-top: 15px;">Привет! Зарабатывай $VILL просто кликая по монете. Выполняй задания и жди листинг!</p>
-            <a href="https://t.me/VillCoin" target="_blank" class="btn-main" onclick="startApp()">Подписаться и Начать</a>
+    <div class="bg-glow"></div>
+
+    <!-- ЭКРАН ПРИ ВХОДЕ -->
+    <div id="start-screen">
+        <div class="start-card">
+            <h2>VILL COIN</h2>
+            <p style="color: #666;">Самый быстрый кликер в твоем селе. Собирай монеты и жди дроп!</p>
+            <a href="#" class="start-btn" onclick="startGame()">НАЧАТЬ МАЙНИНГ</a>
         </div>
     </div>
 
-    <!-- ИГРА -->
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="header">
-        <div id="score">0</div>
-        <div class="currency-label">$VILL COIN</div>
+        <div id="score-container">
+            <h1 id="score">0</h1>
+        </div>
+        <div class="currency-name">$VILL COINS</div>
     </div>
 
-    <div id="game-area">
-        <div class="coin-wrapper">
-            <div class="coin-glow"></div>
-            <div id="coin"></div>
+    <div id="game-container">
+        <div class="coin-base">
+            <div class="coin-outer-glow"></div>
+            <div id="main-coin"></div>
         </div>
     </div>
 
-    <!-- НАВИГАЦИЯ -->
-    <div class="nav-bar">
-        <div class="nav-item" onclick="openModal('shop')">
-            <span style="font-size: 1.2rem;">🛒</span>
+    <div class="bottom-nav">
+        <button class="nav-btn" onclick="showSheet('shop')">
+            <div class="icon">💎</div>
             <span>Магазин</span>
-        </div>
-        <div class="nav-item" onclick="openModal('ads')">
-            <span style="font-size: 1.2rem;">📢</span>
+        </button>
+        <button class="nav-btn" onclick="showSheet('ads')">
+            <div class="icon">🚀</div>
             <span>Реклама</span>
-        </div>
-        <div class="nav-item" onclick="openModal('stats')">
-            <span style="font-size: 1.2rem;">📊</span>
+        </button>
+        <button class="nav-btn" onclick="showSheet('info')">
+            <div class="icon">📈</div>
             <span>Инфо</span>
-        </div>
+        </button>
     </div>
 
-    <!-- МОДАЛКИ -->
-    <div id="modal-container" class="modal" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 id="m-title" class="modal-h">Заголовок</h2>
-            <p id="m-text" class="modal-p">Текст описания...</p>
-            <button class="close-btn" onclick="closeModal()">Понятно</button>
-        </div>
+    <!-- КАСТОМНЫЕ ПАНЕЛИ (ВМЕСТО СЕРЫХ ОКОШЕК) -->
+    <div id="overlay" class="overlay" onclick="hideSheet()"></div>
+    <div id="sheet" class="sheet">
+        <h2 id="sheet-h" class="sheet-title">Заголовок</h2>
+        <p id="sheet-p" class="sheet-text">Описание...</p>
+        <button class="sheet-close" onclick="hideSheet()">ПОНЯТНО</button>
     </div>
 
     <script>
-        // ДАННЫЕ (СОХРАНЕНИЕ)
-        let score = parseInt(localStorage.getItem('vill_score')) || 0;
-        let total = parseInt(localStorage.getItem('vill_total')) || 0;
-        const scoreEl = document.getElementById('score');
+        // --- СИСТЕМА СОХРАНЕНИЯ (РАБОТАЕТ НА ТВОЕМ LENOVO) ---
+        let balance = parseInt(localStorage.getItem('v_bal')) || 0;
+        let totalClicks = parseInt(localStorage.getItem('v_total')) || 0;
         
-        // Стартовая отрисовка
-        scoreEl.innerText = score.toLocaleString();
+        const scoreDisplay = document.getElementById('score');
+        scoreDisplay.innerText = balance.toLocaleString();
 
-        function startApp() {
+        function startGame() {
+            document.getElementById('start-screen').style.transition = '0.8s';
+            document.getElementById('start-screen').style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('welcome-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('welcome-screen').style.display = 'none';
-                }, 500);
-            }, 1200);
+                document.getElementById('start-screen').style.display = 'none';
+            }, 800);
         }
 
-        // ТАП
-        const coin = document.getElementById('coin');
-        coin.addEventListener('touchstart', handleTap);
-        coin.addEventListener('mousedown', (e) => { if(e.button === 0) handleTap(e); });
-
-        function handleTap(e) {
+        // --- ЛОГИКА КЛИКА ---
+        const coin = document.getElementById('main-coin');
+        
+        function processClick(e) {
             e.preventDefault();
             
-            // Координаты для эффекта
-            const x = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-            const y = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-
-            // Логика
-            score++;
-            total++;
-            scoreEl.innerText = score.toLocaleString();
+            balance++;
+            totalClicks++;
             
-            // Анимация монеты
-            coin.style.transform = 'scale(0.92) translateY(5px)';
+            // Обновляем экран
+            scoreDisplay.innerText = balance.toLocaleString();
+            
+            // Сохраняем в память браузера
+            localStorage.setItem('v_bal', balance);
+            localStorage.setItem('v_total', totalClicks);
+
+            // Анимация нажатия
+            coin.style.transform = 'scale(0.9) translateY(8px)';
             setTimeout(() => coin.style.transform = 'scale(1) translateY(0)', 50);
 
-            // Число +1
-            createTapEffect(x, y);
+            // Эффект вылетающей цифры
+            const x = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const y = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            showFloatText(x, y);
 
-            // Вибро и сохранение
-            if (navigator.vibrate) navigator.vibrate(25);
-            save();
+            // Вибрация (для мобилок)
+            if (navigator.vibrate) navigator.vibrate(20);
         }
 
-        function createTapEffect(x, y) {
-            const el = document.createElement('div');
-            el.className = 'tap-number';
-            el.innerText = '+1';
-            el.style.left = `${x - 20}px`;
-            el.style.top = `${y - 40}px`;
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 800);
+        coin.addEventListener('touchstart', processClick);
+        coin.addEventListener('mousedown', (e) => { if(e.button === 0) processClick(e); });
+
+        function showFloatText(x, y) {
+            const txt = document.createElement('div');
+            txt.className = 'floating-value';
+            txt.innerText = '+1';
+            txt.style.left = `${x - 20}px`;
+            txt.style.top = `${y - 40}px`;
+            document.body.appendChild(txt);
+            setTimeout(() => txt.remove(), 700);
         }
 
-        function save() {
-            localStorage.setItem('vill_score', score);
-            localStorage.setItem('vill_total', total);
-        }
+        // --- УПРАВЛЕНИЕ ПРЕМИУМ-ПАНЕЛЯМИ ---
+        const overlay = document.getElementById('overlay');
+        const sheet = document.getElementById('sheet');
+        const sheetH = document.getElementById('sheet-h');
+        const sheetP = document.getElementById('sheet-p');
 
-        // МОДАЛКИ (ВМЕСТО АЛЕРТОВ)
-        const modal = document.getElementById('modal-container');
-        const mTitle = document.getElementById('m-title');
-        const mText = document.getElementById('m-text');
-
-        function openModal(type) {
+        function showSheet(type) {
             if (type === 'shop') {
-                mTitle.innerText = "Магазин Vill";
-                mText.innerText = "Улучшения (мульти-тап, авто-кликер) будут доступны в следующем обновлении. Копи монеты!";
+                sheetH.innerText = "Магазин";
+                sheetP.innerText = "Улучшения (авто-кликер и мульти-тап) сейчас в разработке. Твои монеты сохраняются, копи их для покупки бустов в версии 2.0!";
             } else if (type === 'ads') {
-                mTitle.innerText = "Рекламодателям";
-                mText.innerText = "Хотите разместить рекламу в VillCoin? Пишите нашему менеджеру: @VillCoin_Manager";
-            } else if (type === 'stats') {
-                mTitle.innerText = "Твоя статистика";
-                mText.innerText = `Всего сделано кликов: ${total}\nТекущий баланс: ${score} $VILL\n\nПрогресс сохраняется автоматически на твоем Lenovo.`;
+                sheetH.innerText = "Реклама";
+                sheetP.innerText = "Хочешь продвинуть свой канал или проект? Связь с владельцем: @VillCoin_Manager. Цены для своих — копейки.";
+            } else if (type === 'info') {
+                sheetH.innerText = "Твоя Статистика";
+                sheetP.innerText = `Всего сделано тапов: ${totalClicks}\nТекущий баланс: ${balance} $VILL\n\nПрогресс надежно сохранен в памяти устройства.`;
             }
-            modal.classList.add('active');
+            
+            overlay.classList.add('active');
+            sheet.classList.add('active');
         }
 
-        function closeModal() {
-            modal.classList.remove('active');
+        function hideSheet() {
+            overlay.classList.remove('active');
+            sheet.classList.remove('active');
         }
 
-        // СЕКРЕТНАЯ АДМИНКА (1505)
-        let secret = 0;
-        scoreEl.onclick = () => {
-            secret++;
-            if(secret >= 5) {
-                let p = prompt("Admin Key:");
-                if(p === "1505") {
-                    let amount = prompt("Сколько монет начислить?");
-                    score += parseInt(amount) || 0;
-                    scoreEl.innerText = score.toLocaleString();
-                    save();
+        // --- СЕКРЕТНЫЙ АДМИН-РЕЖИМ (1505) ---
+        let tapSeq = 0;
+        scoreDisplay.parentElement.onclick = () => {
+            tapSeq++;
+            if(tapSeq >= 5) {
+                let code = prompt("Введите код доступа:");
+                if(code === "1505") {
+                    let bonus = prompt("Сколько начислить?");
+                    balance += parseInt(bonus) || 0;
+                    scoreDisplay.innerText = balance.toLocaleString();
+                    localStorage.setItem('v_bal', balance);
                 }
-                secret = 0;
+                tapSeq = 0;
             }
-            setTimeout(() => secret = 0, 2000);
+            setTimeout(() => tapSeq = 0, 2000);
         };
     </script>
 </body>
