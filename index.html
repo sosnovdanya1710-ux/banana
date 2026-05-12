@@ -3,46 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VillCoin - Тапай и зарабатывай</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Banana Clicker - VillCoin Edition</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background-color: #1a1a2e; /* Тот самый темный фон */
             color: white;
-            font-family: 'Montserrat', sans-serif;
+            font-family: sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: space-between;
             height: 100vh;
             overflow: hidden;
             user-select: none;
-        }
-
-        #welcome-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .btn-sub {
-            background: #0088cc;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 20px;
-            font-size: 1.2rem;
-            box-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
         }
 
         #score-container {
@@ -51,177 +26,146 @@
         }
 
         #score {
-            font-size: 4rem;
-            font-weight: 900;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            font-size: 80px;
+            font-weight: bold;
             color: #ffd700;
-            cursor: pointer;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        #currency-name {
+            color: #888;
+            font-size: 20px;
+            margin-top: 10px;
         }
 
         #coin-container {
-            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1000px;
+            flex-grow: 1;
         }
 
         #coin {
-            width: 280px;
-            height: 280px;
+            width: 250px;
+            height: 250px;
             background: radial-gradient(circle, #ffd700, #b8860b);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 50px rgba(184, 134, 11, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
             cursor: pointer;
-            transition: transform 0.05s ease-out;
-            border: 10px solid #daa520;
+            transition: transform 0.05s ease;
+            border: 8px solid #daa520;
+        }
+
+        #coin:active {
+            transform: scale(0.95);
         }
 
         #coin span {
-            font-size: 8rem;
-            font-weight: 900;
-            color: #daa520;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .footer-btns {
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            padding-bottom: 30px;
-        }
-
-        .btn-footer {
-            background: rgba(255,255,255,0.1);
-            padding: 12px 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
+            font-size: 120px;
             font-weight: bold;
+            color: #daa520;
+        }
+
+        .footer {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            background-color: #2a2a4e;
+            border: 1px solid #444;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 16px;
             cursor: pointer;
         }
 
-        #toast {
+        /* Окно подписки */
+        #sub-screen {
             position: fixed;
-            bottom: 100px;
-            background: #4caf50;
-            padding: 10px 20px;
-            border-radius: 20px;
-            display: none;
-            animation: fadeInUp 0.3s;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .sub-btn {
+            background: #0088cc;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div id="welcome-screen">
-        <h1>VILL COIN</h1>
-        <p>Подпишись на канал, чтобы начать играть!</p>
-        <a href="https://t.me/VillCoin" target="_blank" class="btn-sub" onclick="checkSub()">ПОДПИСАТЬСЯ</a>
+    <div id="sub-screen">
+        <h1 style="margin-bottom: 10px;">VILL COIN</h1>
+        <p style="margin-bottom: 30px; color: #ccc;">Подпишись, чтобы играть</p>
+        <a href="https://t.me/VillCoin" target="_blank" class="sub-btn" onclick="closeSub()">ПОДПИСАТЬСЯ</a>
     </div>
 
     <div id="score-container">
-        <div id="score">0</div>
-        <p style="color: #888;">$VILL COINS</p>
+        <div id="score" onclick="openAdmin()">0</div>
+        <div id="currency-name">$VILL COINS</div>
     </div>
 
     <div id="coin-container">
-        <div id="coin" onclick="tap(event)">
+        <div id="coin" onclick="tap()">
             <span>V</span>
         </div>
     </div>
 
-    <div id="toast">Бонус +50 коинов!</div>
-
-    <div class="footer-btns">
-        <button class="btn-footer" onclick="alert('Скоро: Магазин улучшений!')">МАГАЗИН</button>
-        <button class="btn-footer" onclick="showAds()">РЕКЛАМА</button>
+    <div class="footer">
+        <button class="btn" onclick="alert('Скоро!')">МАГАЗИН</button>
+        <button class="btn" onclick="showAds()">РЕКЛАМА</button>
     </div>
 
     <script>
-        // --- ЛОГИКА ИГРЫ ---
-        
-        // 1. Загрузка прогресса из памяти (чтобы ничего не пропадало)
+        // Загрузка и сохранение
         let score = parseInt(localStorage.getItem('vill_score')) || 0;
-        let clicks = 0;
-        let totalTaps = parseInt(localStorage.getItem('vill_total_taps')) || 0;
+        let total = parseInt(localStorage.getItem('vill_total')) || 0;
+        document.getElementById('score').innerText = score;
 
-        const scoreEl = document.getElementById('score');
-        scoreEl.innerText = score;
-
-        // 2. Вход после подписки
-        function checkSub() {
+        function closeSub() {
             setTimeout(() => {
-                document.getElementById('welcome-screen').style.display = 'none';
+                document.getElementById('sub-screen').style.display = 'none';
             }, 1000);
         }
 
-        // 3. Тап по монете
-        function tap(event) {
+        function tap() {
             score++;
-            clicks++;
-            totalTaps++;
-            updateUI();
-
-            // Анимация нажатия
-            const coin = document.getElementById('coin');
-            coin.style.transform = 'scale(0.95) rotateX(10deg)';
-            setTimeout(() => coin.style.transform = 'scale(1) rotateX(0)', 50);
-
-            // Бонус за 100 кликов
-            if (clicks >= 100) {
-                score += 50;
-                clicks = 0;
-                showToast();
-            }
-
-            // Вибрация (для мобилок)
-            if (navigator.vibrate) navigator.vibrate(40);
-
-            // Авто-сохранение в память устройства
-            saveData();
-        }
-
-        function updateUI() {
-            scoreEl.innerText = score;
-        }
-
-        function saveData() {
+            total++;
+            document.getElementById('score').innerText = score;
             localStorage.setItem('vill_score', score);
-            localStorage.setItem('vill_total_taps', totalTaps);
+            localStorage.setItem('vill_total', total);
+            if (navigator.vibrate) navigator.vibrate(40);
         }
 
-        // 4. СЕКРЕТНАЯ АДМИНКА (пароль 1505)
-        let adminCounter = 0;
-        scoreEl.onclick = function() {
-            adminCounter++;
-            if (adminCounter >= 5) {
-                let pass = prompt("Введите пароль владельца:");
-                if (pass === "1505") {
-                    alert(`📊 АДМИНКА VillCoin\n\nТвой баланс: ${score}\nВсего кликов: ${totalTaps}\nСохранение: АКТИВНО`);
-                }
-                adminCounter = 0;
-            }
-            setTimeout(() => adminCounter = 0, 2000);
-        };
-
-        // 5. Рекламный контакт
         function showAds() {
-            alert('Сотрудничество и реклама: @VillCoin_Manager \nПишите для размещения!');
+            alert('Сотрудничество: @VillCoin_Manager');
         }
 
-        function showToast() {
-            const t = document.getElementById('toast');
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 2000);
+        let clicks = 0;
+        function openAdmin() {
+            clicks++;
+            if(clicks >= 5) {
+                let p = prompt("Пароль:");
+                if(p === "1505") alert("Стата: " + total + " кликов всего.");
+                clicks = 0;
+            }
+            setTimeout(() => clicks = 0, 2000);
         }
     </script>
 </body>
