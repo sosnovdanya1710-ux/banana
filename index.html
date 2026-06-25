@@ -2,202 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VillCoin | OFFICIAL LISTING</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Профиль</title>
     <style>
-        :root {
-            --gold: #ffcf48;
-            --danger: #ff4b4b;
-            --bg: #000000;
-            --accent: #00ff88;
-        }
-
-        body {
-            margin: 0; background: var(--bg); color: white;
-            font-family: 'Inter', sans-serif; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        /* --- ЭКРАН ПРОВЕРКИ (ГЛАВНЫЙ ФИЛЬТР) --- */
-        #checker {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; padding: 30px; text-align: center;
-        }
-
-        .logo-main { font-family: 'Montserrat'; font-size: 3rem; color: var(--accent); margin-bottom: 10px; }
-        
-        .verify-box {
-            background: #111; border: 1px solid #333; padding: 25px; border-radius: 30px; width: 100%;
-        }
-
-        .btn-tg {
-            background: #0088cc; color: white; text-decoration: none; padding: 20px;
-            border-radius: 15px; display: block; font-weight: 800; margin: 20px 0;
-            font-size: 1.1rem; box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
-        }
-
-        .btn-check {
-            background: var(--accent); color: black; border: none; width: 100%;
-            padding: 18px; border-radius: 15px; font-weight: 900; cursor: pointer;
-        }
-
-        /* --- ИНТЕРФЕЙС ИГРЫ --- */
-        .listing-timer {
-            margin-top: 50px; background: rgba(255, 75, 75, 0.1);
-            border: 1px solid var(--danger); padding: 10px 20px; border-radius: 15px;
-            color: var(--danger); font-weight: 800; font-size: 0.8rem;
-        }
-
-        #balance {
-            font-family: 'Montserrat'; font-size: 5rem; margin: 20px 0 0 0;
-            background: linear-gradient(to bottom, #fff, var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        /* МОНЕТА (СДЕЛАЛ МАКСИМАЛЬНО КЛИКАБЕЛЬНОЙ) */
-        #coin-zone {
-            flex: 1; display: flex; justify-content: center; align-items: center;
-            width: 100%; position: relative; z-index: 100;
-        }
-
-        .main-coin {
-            width: 280px; height: 280px; background: url('https://cdn-icons-png.flaticon.com/512/6001/6001527.png');
-            background-size: cover; border-radius: 50%; cursor: pointer;
-            filter: drop-shadow(0 0 30px rgba(0, 255, 136, 0.3));
-            transition: transform 0.05s;
-        }
-
-        .main-coin:active { transform: scale(0.95); }
-
-        /* МЕНЮ (РЕКЛАМА И РЕФЕРАЛЫ) */
-        .nav {
-            width: 90%; display: flex; gap: 10px; margin-bottom: 40px;
-        }
-
-        .nav-item {
-            flex: 1; background: #111; padding: 15px; border-radius: 20px;
-            text-align: center; border: 1px solid #222; font-size: 0.7rem; font-weight: 800;
-        }
-
-        .nav-item.highlight { border-color: var(--accent); color: var(--accent); }
-
-        /* ПАНЕЛЬ СОТРУДНИЧЕСТВА */
-        .modal {
-            position: fixed; bottom: -100%; left: 0; width: 100%; background: #0a0a0a;
-            border-top: 3px solid var(--accent); border-radius: 30px 30px 0 0;
-            padding: 40px 20px; z-index: 2000; transition: 0.4s;
-        }
-        .modal.active { bottom: 0; }
-        
-        .collab-link {
-            color: var(--accent); font-size: 1.5rem; font-weight: 900; text-decoration: none;
-            display: block; margin: 20px 0; padding: 15px; background: rgba(0,255,136,0.1);
-            border-radius: 15px; border: 1px dashed var(--accent);
-        }
+        body { font-family: sans-serif; background: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 15px; text-align: center; width: 80%; max-width: 300px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h1 { margin: 10px 0; font-size: 24px; }
+        p { color: #aaa; }
+        .btn { display: block; background: #5865F2; color: white; padding: 10px; margin-top: 15px; border-radius: 8px; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <!-- ЭКРАН ПРОВЕРКИ -->
-    <div id="checker">
-        <div class="logo-main">VILLCOIN</div>
-        <div class="verify-box">
-            <p style="font-weight: 700;">ПЕРЕД НАЧАЛОМ ФАРМИНГА:</p>
-            <p style="font-size: 0.8rem; color: #777;">Чтобы ваши монеты были зачислены в пул листинга, вы должны быть подписаны на канал основателя.</p>
-            <a href="https://t.me/VillCoin" target="_blank" class="btn-tg" onclick="localStorage.setItem('clicked_sub', '1')">ПОДПИСАТЬСЯ НА КАНАЛ</a>
-            <button class="btn-check" onclick="verify()">ПРОВЕРИТЬ ПОДПИСКУ</button>
-        </div>
-        <p style="margin-top: 20px; font-size: 0.7rem; color: #444;">ID пользователя: <span id="user-id"></span></p>
+    <div class="card">
+        <h1>Твой Профиль</h1>
+        <p>Добро пожаловать в личный кабинет</p>
+        <div class="btn">ID: 12345678</div>
     </div>
 
-    <!-- ОСНОВНАЯ ИГРА -->
-    <div class="listing-timer">ЛИСТИНГ ЧЕРЕЗ: <span id="timer">14д. 08ч. 44м.</span></div>
-    
-    <h1 id="balance">0</h1>
-    <div style="color: #555; font-weight: 900; font-size: 0.8rem; letter-spacing: 3px;">TOTAL $VILL ASSETS</div>
-
-    <div id="coin-zone">
-        <div class="main-coin" id="coin"></div>
-    </div>
-
-    <div class="nav">
-        <div class="nav-item highlight" onclick="openAds()">🤝 СОТРУДНИЧЕСТВО</div>
-        <div class="nav-item" onclick="openRef()">👥 РЕФЕРАЛЫ (x2)</div>
-    </div>
-
-    <!-- ОКНО СОТРУДНИЧЕСТВА -->
-    <div id="modal-ads" class="modal">
-        <h2 style="margin-top: 0;">РЕКЛАМА И КОЛЛАБЫ</h2>
-        <p style="color: #666;">Твой проект может увидеть всё наше комьюнити. Для покупки рекламы пиши напрямую:</p>
-        <a href="https://t.me/VillCoin_Manager" target="_blank" class="collab-link">@VillCoin_Manager</a>
-        <button class="btn-check" style="background: #222; color: #fff;" onclick="closeAll()">ЗАКРЫТЬ</button>
-    </div>
-
-    <script>
-        // ГЕНЕРАЦИЯ ID
-        document.getElementById('user-id').innerText = Math.floor(Math.random() * 1000000000);
-
-        let bal = parseInt(localStorage.getItem('fake_bal')) || 0;
-        const balEl = document.getElementById('balance');
-        balEl.innerText = bal.toLocaleString();
-
-        // СИСТЕМА ПРОВЕРКИ
-        function verify() {
-            const btn = document.querySelector('.btn-check');
-            btn.innerText = "ПРОВЕРКА...";
-            
-            // Искусственная задержка для "солидности"
-            setTimeout(() => {
-                if(localStorage.getItem('clicked_sub')) {
-                    document.getElementById('checker').style.display = 'none';
-                } else {
-                    alert("Ошибка! Система не видит вашу подписку. Нажмите 'Подписаться' и вернитесь.");
-                    btn.innerText = "ПРОВЕРИТЬ ПОДПИСКУ";
-                }
-            }, 2000);
-        }
-
-        // КЛИКЕР
-        const coin = document.getElementById('coin');
-        coin.onclick = (e) => {
-            bal += 1;
-            balEl.innerText = bal.toLocaleString();
-            localStorage.setItem('fake_bal', bal);
-            
-            // Эффект вибрации
-            if(navigator.vibrate) navigator.vibrate(15);
-        };
-
-        // ТАЙМЕР ЛИСТИНГА (ИМИТАЦИЯ)
-        function updateTimer() {
-            const days = 14;
-            let h = 8, m = 44, s = 59;
-            setInterval(() => {
-                s--;
-                if(s<0) { s=59; m--; }
-                document.getElementById('timer').innerText = `${days}д. ${h}ч. ${m}м. ${s}с.`;
-            }, 1000);
-        }
-        updateTimer();
-
-        // ФУНКЦИИ МЕНЮ
-        function openAds() { document.getElementById('modal-ads').classList.add('active'); }
-        function closeAll() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
-        function openRef() {
-            alert("Чтобы активировать реферальную систему и множитель x2, отправь ссылку на приложение 10 друзьям в Telegram!");
-        }
-
-        // АДМИН-ПАНЕЛЬ (1505)
-        balEl.onclick = () => {
-            let p = prompt("DEV_CODE:");
-            if(p === "1505") {
-                bal += 1000000;
-                balEl.innerText = bal.toLocaleString();
-                localStorage.setItem('fake_bal', bal);
-            }
-        }
-    </script>
 </body>
 </html>
+
