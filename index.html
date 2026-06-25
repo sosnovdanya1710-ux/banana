@@ -7,15 +7,23 @@
     <style>
         body { font-family: sans-serif; background: #121212; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
         .card { background: #1e1e1e; padding: 20px; border-radius: 15px; text-align: center; width: 80%; }
-        h1 { color: #FFE135; }
-        .btn { background: #5865F2; color: white; padding: 10px; border-radius: 8px; margin-top: 15px; display: inline-block; }
+        #banana { font-size: 80px; cursor: pointer; transition: transform 0.1s; }
+        #banana:active { transform: scale(0.9); }
+        .count { font-size: 24px; margin-top: 15px; color: #FFE135; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>🍌 Банан</h1>
-        <p>Добро пожаловать в профиль!</p>
-        <div class="btn">ID: 12345678</div>
+        <div id="banana" onclick="tap()">🍌</div>
+        <p>Добро пожаловать!</p>
+        <div class="count">Счет: <span id="score">0</span></div>
     </div>
+    <script>
+        let score = 0;
+        function tap() {
+            score++;
+            document.getElementById('score').innerText = score;
+        }
+    </script>
 </body>
 </html>
